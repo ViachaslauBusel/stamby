@@ -14,7 +14,7 @@ namespace Walkers
         private Node m_targetNode;
         private Cell m_location = null;
         private Rigidbody2D m_rigidbody;
-        private bool m_work = true;
+        private bool m_emergencyStop = false;
         private Action m_endAction = null;
         private GameGrid m_myGrid;
 
@@ -37,7 +37,7 @@ namespace Walkers
         public void Stop(Action action)
         {
             m_endAction = action;
-            m_work = false;
+            m_emergencyStop = true;
             if (!Moving)
             {
                 m_endAction?.Invoke();
@@ -53,7 +53,7 @@ namespace Walkers
 
         private Vector2 UpdatePosition(float deltaTime)
         {
-            if (m_targetNode != null && deltaTime > 0.001f)
+            if (m_targetNode != null && deltaTime > 0.0001f)
             {
                 Vector2 direction = m_myGrid.GetPosition(m_targetNode.Cell) - m_rigidbody.position;
                 Vector2 step = direction.normalized * m_speed * deltaTime;
@@ -61,7 +61,7 @@ namespace Walkers
                 //step length exceeds length to point, point reached
                 if (step.sqrMagnitude >= direction.sqrMagnitude)
                 {
-                    if (!m_work)
+                    if (m_emergencyStop)
                     {
                         m_targetNode = null;
                         m_endAction?.Invoke();
@@ -80,7 +80,7 @@ namespace Walkers
         internal void SetTargetNode(Node node)
         {
 
-            if (!m_work) return;
+            if (m_emergencyStop) return;
 
 
             if (node != null) { m_location?.Exit(gameObject); }

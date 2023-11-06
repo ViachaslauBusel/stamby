@@ -18,7 +18,7 @@ namespace GameField
         public bool AvailableMove => m_availableMove;
         public bool Finish => m_finish;
 
-        public int OrderInLayer => -m_row;
+        public int RenderOrderInLayer => -m_row;
 
 
         public void Init(int row, int column)
@@ -33,7 +33,7 @@ namespace GameField
             SpriteRenderer[] sprites = GetComponentsInChildren<SpriteRenderer>();
 
             foreach (SpriteRenderer sprite in sprites)
-            { sprite.sortingOrder = OrderInLayer; }
+            { sprite.sortingOrder = RenderOrderInLayer; }
         }
         internal void UpdateStatus()
         {

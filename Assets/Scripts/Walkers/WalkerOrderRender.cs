@@ -23,7 +23,7 @@ namespace Walkers
 
         private void OnCellEnter(Cell cell)
         {
-            m_spriteRenderer.sortingOrder = cell.OrderInLayer;
+            m_spriteRenderer.sortingOrder = cell.RenderOrderInLayer;
         }
 
         private void OnDestroy()
