@@ -1,13 +1,22 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UI;
 using UnityEngine;
+using Zenject;
 
 public class Bomb : MonoBehaviour
 {
     [SerializeField] float m_explosionDelay = 2.0f;
     [SerializeField] float m_radiusStaticExplosion = 1.0f;
     [SerializeField] float m_radiusWalkerExplosion = 2.0f;
+    private GameOver m_gameOver;
+
+    [Inject]
+    private void Construct(GameOver gameOver)
+    {
+        m_gameOver = gameOver;
+    }
 
     private void Start()
     {
@@ -31,7 +40,7 @@ public class Bomb : MonoBehaviour
             if (_walker.gameObject.CompareTag("Player"))
             {
                 Destroy(_walker.gameObject); 
-                GameOver.Instance.Open(1.0f);
+                m_gameOver.Open(1.0f);
             }
         }
         Destroy(gameObject);

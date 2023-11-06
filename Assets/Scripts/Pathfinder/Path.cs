@@ -1,24 +1,24 @@
+using GameField;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Zenject;
 
 namespace Pathfinder
 {
     public static class Path
     {
-        public static Node Find(Vector3 startPoint, Vector3 endPoint)//, Packet packet = null)
+        public static Node Find(this GameGrid myGrid, Vector3 startPoint, Vector3 endPoint)
         {
-         //   node = null;
-            // оординаты €чейки в котором находитьс€ начальна€ точка
-            Cell startCell = MyGrid.Instance.GetCell(startPoint); 
+            //Coordinates of the cell in which the starting point is located
+            Cell startCell = myGrid.GetCell(startPoint); 
 
-            Cell endCell = MyGrid.Instance.GetCell(endPoint);
+            Cell endCell = myGrid.GetCell(endPoint);
 
-            // онечна€ точка находитьс€ в пределах текущего нода
+            //The endpoint is equals current node
             if (startCell == endCell)
             {
-                //   Debug.Log.Debug($"Path.Find return:  онечна€ точка находитьс€ в пределах текущего нода");
                 return new Node()
                 {
                     Cell = startCell,
@@ -26,7 +26,7 @@ namespace Pathfinder
                 };
             }
 
-            //¬ес длины пути до конечной точки
+            //Weight of path length to end point
             int weightF = (int)(Mathf.Abs(endCell.Column - startCell.Column) + Mathf.Abs(endCell.Row - startCell.Row) * 10.0f);
             Node startNode = new Node()
             {
@@ -35,20 +35,20 @@ namespace Pathfinder
             };
 
 
-            //ќткрытый список узлов
+            //Open node list
             List<Node> open = new List<Node>() { startNode };
-            //«акрытый список узлов
+            //Private node list
             List<Node> closed = new List<Node>();
 
 
-            //ћаксимальное количество циклов поиска
+            //Maximum number of search cycles
             int cicle = 0, maxCicle = 50;
             Node current = null;
             while (open.Count > 0 && cicle++ < maxCicle)
             {
-                //ѕоиск текущего узла из открытого списка, с минимальным весом
+                //Finding the current node from an open list, with minimum weight
                 current = open.OrderBy((n) => n.Weight).First();
-                //≈сли конечна€ точка была достигнута
+                //If the end point has been reached
                 if (current.WeightToFinish == 0)
                 {
 
@@ -56,48 +56,48 @@ namespace Pathfinder
                     break;
                 }
 
-                {//”зел, который был задействован в поиске ближайших узлов перемещаем из открытого в закрытый список узлов
+                {//The node that was involved in the search for nearby nodes is moved from the open to the closed list of nodes
                     open.Remove(current);
                     closed.Add(current);
                 }
 
 
-                //ѕеребираем всех соседей узла current
-                foreach (Cell neigbourCell in MyGrid.Instance.GetAround(current.Cell))
+                //Iterate over all neighbors of the current node
+                foreach (Cell neigbourCell in myGrid.GetAround(current.Cell))
                 {
-                    //ѕровер€ем доступен ли этот узел физический
+                    //Checking whether this node is physically accessible
                     if (!neigbourCell.AvailableMove)
                     {
-                        //”зел не доступен, переходим к следующему соседу
+                        //Node is not reachable, move on to next neighbor
                         continue;
                     }
 
-                    //≈сли такой узел уже есть в списке закрытых узлов, переходим к следующему
+                    //If such a node is already in the list of closed nodes, move on to the next one
                     if (closed.Any((n) => n.Cell == neigbourCell)) { continue; }
 
-                    //¬ес длины пути от текущей точки до новго узла
+                    //Weight of the path length from the current point to the new node
                     int weightToStart = ((Mathf.Abs(neigbourCell.Row - current.Cell.Row) + Mathf.Abs(neigbourCell.Column - current.Cell.Column)) == 2) ? 14 : 10;//≈сли узел расположен ортаганально\ текущего узла вес 14 если перпендикул€рно| 10
-                    //¬ес от старта до новго узла
+                    //Weight from start to new node
                     weightToStart = current.WeightToStart + weightToStart;
 
                     Node neigbourInOpen = open.Find((n) => n.Cell == neigbourCell);
-                    //≈сли сосед уже есть в списке open и его вес от старта меньше текущего, переходим к следующему соседу
+                    //If the neighbor is already in the open list and its weight from the start is less than the current one, move on to the next neighbor
                     if (neigbourInOpen != null && neigbourInOpen.WeightToStart < weightToStart) { continue; }
 
 
-                   
 
 
 
-                    //≈сли сосед уже есть в списке, обновить данные
+
+                    //If the neighbor is already on the list, update the data
                     if (neigbourInOpen != null)
                     {
                         neigbourInOpen.WeightToStart = weightToStart;
                         neigbourInOpen.CameFrom = current;
                     }
-                    else//≈сли нет создать новый
+                    else//If not, create a new one
                     {
-                        //¬ес длины пути до конечной точки
+                        //Weight of path length to end point
                         int weightToFinish = (int)(Mathf.Abs(endCell.Row - neigbourCell.Row) + Mathf.Abs(endCell.Column - neigbourCell.Column) * 10.0f);
                         Node newNode = new Node()
                         {
@@ -113,10 +113,10 @@ namespace Pathfinder
 
             current = closed.OrderBy((n) => n.WeightToFinish).First();
 
-            //—оздаем цепочку узлов от начального до конечного. 
+            //We create a chain of nodes from the beginning to the end.
             while (current.CameFrom != null)
             {
-                //Ѕерем последний узел, и присваиваем его родителю следующий узел на себ€
+                //We take the last node and assign the next node to its parent
                 current.CameFrom.NextNode = current;
                 current = current.CameFrom;
             }

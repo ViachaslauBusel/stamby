@@ -1,9 +1,13 @@
-﻿public enum State
+﻿
+namespace AI
 {
-    None,
-    Waiting,
-    Atack,
-    Walk,
-    Chase,
-    Dead
+    public enum State
+    {
+        None,
+        Waiting,
+        Atack,
+        Walk,
+        Chase,
+        Dead
+    }
 }

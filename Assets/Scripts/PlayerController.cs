@@ -1,54 +1,62 @@
+using GameField;
 using Pathfinder;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UI;
 using UnityEngine;
+using Walkers;
+using Zenject;
 
 public class PlayerController : MonoBehaviour
 {
-   
-    public static PlayerController Instance;
-
     [SerializeField] Camera m_camera;
     private WalkerController m_controller;
-
+    private GameOver m_gameOver;
+    private GameGrid m_grid;
 
     public WalkerController Controller => m_controller;
 
+    [Inject]
+    private void Construct(GameOver gameOver, GameGrid grid)
+    {
+        m_gameOver = gameOver;
+        m_grid = grid;
+    }
+
     private void Awake()
     {
-        Instance = this;
         m_controller = GetComponent<WalkerController>();
         m_controller.onCellEnter += OnCellEnter;
     }
 
     /// <summary>
-    /// Вызывется при смене ячейки
+    /// Called when a cell changes
     /// </summary>
     /// <param name="cell"></param>
     private void OnCellEnter(Cell cell)
     {
-        foreach (Cell neigbour in MyGrid.Instance.GetAround(cell))
+        foreach (Cell neigbour in m_grid.GetAround(cell))
         {
-            //Если в соседних ячейках находиться враг, остановить игрока и врага и запустить анимацию атаки
+            //If there is an enemy in adjacent cells, stop the player and enemy and start the attack animation
             GameObject enemy = neigbour.FindTag("Enemy");
             if(enemy != null)
             {
-                Debug.Log($"Player обноружил врага");
+                Debug.Log($"Player has detected an enemy");
                 enemy.GetComponent<WalkerController>().Stop(() =>
                 {
                     enemy.GetComponent<WalkerAnimator>().PlayAtack(transform);
                 });
                 m_controller.Stop(() =>
                 {
-                    GameOver.Instance.Open(2.0f);
+                    m_gameOver.Open(2.0f);
                 });
                 return;
             }
         }
         if (cell.Finish)
         {
-            GameOver.Instance.Open(1.0f, "YOU WIN");
+            m_gameOver.Open(1.0f, "YOU WIN");
         }
     }
 
@@ -56,12 +64,12 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        m_controller.SetTargetNode(Path.Find(transform.position, transform.position));
+        m_controller.SetTargetNode(m_grid.Find(transform.position, transform.position));
        
     }
     public void PlayerInput()
     {
-            m_controller.SetTargetNode(Path.Find(transform.position, m_camera.ScreenToWorldPoint(Input.mousePosition)));
+            m_controller.SetTargetNode(m_grid.Find(transform.position, m_camera.ScreenToWorldPoint(Input.mousePosition)));
     }
 
     private void OnDestroy()

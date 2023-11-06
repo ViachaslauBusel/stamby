@@ -1,3 +1,4 @@
+using GameField;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,13 +11,13 @@ namespace Pathfinder
         public Cell Cell { get; set; }
 
 
-        /// <summary>Нод из которого мы пришли к этому ноду</summary>
+        /// <summary>The node from which we came to this node</summary>
         public Node CameFrom { get; set; }
-        /// <summary>Следующий нод пути к финишу</summary>
+        /// <summary>Next node on the way to the finish line</summary>
         public Node NextNode { get; set; }
-        /// <summary>Вес длины пути от начальной точки</summary>
+        /// <summary>Weight of path length from starting point</summary>
         public int WeightToStart { get; set; } = 0;
-        /// <summary>Вес длины пути  до конечной точки</summary>
+        /// <summary>Weight of path length to end point</summary>
         public int WeightToFinish { get; set; } = 0;
         public int Weight => (WeightToFinish + WeightToFinish);
 
