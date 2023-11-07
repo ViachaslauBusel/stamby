@@ -11,15 +11,10 @@ namespace UI
 {
     public class MainMenu : MonoBehaviour
     {
-
-
-      
         public void ResetScene()
         {
             Time.timeScale = 1.0f;
             SceneManager.LoadScene("SampleScene");
         }
-
-      
     }
 }

@@ -17,7 +17,6 @@ namespace GameField
         public int Column => m_column;
         public bool AvailableMove => m_availableMove;
         public bool Finish => m_finish;
-
         public int RenderOrderInLayer => -m_row;
 
 
@@ -35,23 +34,23 @@ namespace GameField
             foreach (SpriteRenderer sprite in sprites)
             { sprite.sortingOrder = RenderOrderInLayer; }
         }
-        internal void UpdateStatus()
+
+        public void UpdateStatus()
         {
             m_availableMove = true;
         }
 
-
-        internal GameObject FindTag(string tag)
+        public GameObject FindTag(string tag)
         {
             return m_walkers.Find((obj) => obj.CompareTag(tag));
         }
 
-        internal void Exit(GameObject gameObject)
+        public void Exit(GameObject gameObject)
         {
             m_walkers.Remove(gameObject);
         }
 
-        internal void Enter(GameObject gameObject)
+        public void Enter(GameObject gameObject)
         {
             m_walkers.Add(gameObject);
         }
@@ -61,10 +60,12 @@ namespace GameField
             if (other == null) return false;
             return Row == other.Row && Column == other.Column;
         }
+
         public override bool Equals(object obj)
         {
             return Equals((Cell)obj);
         }
+
         public override int GetHashCode()
         {
             int hash = 17;

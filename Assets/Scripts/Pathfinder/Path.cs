@@ -61,7 +61,6 @@ namespace Pathfinder
                     closed.Add(current);
                 }
 
-
                 //Iterate over all neighbors of the current node
                 foreach (Cell neigbourCell in myGrid.GetAround(current.Cell))
                 {
@@ -83,10 +82,6 @@ namespace Pathfinder
                     Node neigbourInOpen = open.Find((n) => n.Cell == neigbourCell);
                     //If the neighbor is already in the open list and its weight from the start is less than the current one, move on to the next neighbor
                     if (neigbourInOpen != null && neigbourInOpen.WeightToStart < weightToStart) { continue; }
-
-
-
-
 
 
                     //If the neighbor is already on the list, update the data

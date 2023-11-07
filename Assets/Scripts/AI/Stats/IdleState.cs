@@ -10,13 +10,10 @@ namespace AI.Stats
 
         public IdleState(AIComponent master) : base(master)
         {
-            //  m_attachedStates.Add(new AliveState(master));
-            // m_attachedStates.Add(new AggressionState(master));
         }
 
         protected override void Abort()
         {
-
         }
 
         protected override void ResetState()

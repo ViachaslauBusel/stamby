@@ -34,6 +34,22 @@ namespace Walkers
             m_rigidbody = GetComponent<Rigidbody2D>();
         }
 
+        public void MoveTo(Node node)
+        {
+            if (m_emergencyStop) return;
+
+            if (node != null) { m_location?.Exit(gameObject); }
+
+            m_targetNode = node;
+            Moving = m_targetNode != null;
+            if (m_targetNode != null)
+            {
+                m_location = m_targetNode.Cell;
+                m_location.Enter(gameObject);
+                onCellEnter?.Invoke(m_targetNode.Cell);
+            }
+        }
+
         public void Stop(Action action)
         {
             m_endAction = action;
@@ -43,6 +59,7 @@ namespace Walkers
                 m_endAction?.Invoke();
             }
         }
+
         private void FixedUpdate()
         {
             if (m_targetNode != null)
@@ -66,7 +83,7 @@ namespace Walkers
                         m_targetNode = null;
                         m_endAction?.Invoke();
                     }
-                    else { SetTargetNode(m_targetNode.NextNode); }
+                    else { MoveTo(m_targetNode.NextNode); }
 
                     float usedTime = deltaTime * (direction.sqrMagnitude / step.sqrMagnitude);
                     return direction + UpdatePosition(deltaTime - usedTime);
@@ -77,28 +94,9 @@ namespace Walkers
             return m_rigidbody.position;
         }
 
-        internal void SetTargetNode(Node node)
-        {
-
-            if (m_emergencyStop) return;
-
-
-            if (node != null) { m_location?.Exit(gameObject); }
-
-            m_targetNode = node;
-            Moving = m_targetNode != null;
-            if (m_targetNode != null)
-            {
-                m_location = m_targetNode.Cell;
-                m_location.Enter(gameObject);
-                onCellEnter?.Invoke(m_targetNode.Cell);
-            }
-        }
-
         private void OnDestroy()
         {
             m_location?.Exit(gameObject);
         }
-
     }
 }

@@ -30,6 +30,20 @@ public class PlayerController : MonoBehaviour
         m_controller.onCellEnter += OnCellEnter;
     }
 
+    private void Start()
+    {
+        m_controller.MoveTo(m_grid.Find(transform.position, transform.position));
+
+    }
+
+    /// <summary>
+    /// This method is called from UI button
+    /// </summary>
+    public void PlayerInput()
+    {
+        m_controller.MoveTo(m_grid.Find(transform.position, m_camera.ScreenToWorldPoint(Input.mousePosition)));
+    }
+
     /// <summary>
     /// Called when a cell changes
     /// </summary>
@@ -58,18 +72,6 @@ public class PlayerController : MonoBehaviour
         {
             m_gameOver.Open(1.0f, "YOU WIN");
         }
-    }
-
-
-
-    private void Start()
-    {
-        m_controller.SetTargetNode(m_grid.Find(transform.position, transform.position));
-       
-    }
-    public void PlayerInput()
-    {
-            m_controller.SetTargetNode(m_grid.Find(transform.position, m_camera.ScreenToWorldPoint(Input.mousePosition)));
     }
 
     private void OnDestroy()

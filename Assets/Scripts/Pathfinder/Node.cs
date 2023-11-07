@@ -9,8 +9,6 @@ namespace Pathfinder
     public class Node
     {
         public Cell Cell { get; set; }
-
-
         /// <summary>The node from which we came to this node</summary>
         public Node CameFrom { get; set; }
         /// <summary>Next node on the way to the finish line</summary>
@@ -21,7 +19,7 @@ namespace Pathfinder
         public int WeightToFinish { get; set; } = 0;
         public int Weight => (WeightToFinish + WeightToFinish);
 
-        internal Node Last()
+        public Node Last()
         {
             if (NextNode != null) return NextNode.Last();
             return this;

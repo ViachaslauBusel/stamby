@@ -14,7 +14,6 @@ namespace Walkers
 
         private Vector3 m_lasPosition;
 
-
         private void Awake()
         {
             m_lasPosition = transform.position;

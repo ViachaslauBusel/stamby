@@ -14,7 +14,8 @@ namespace AI
 {
     public class AIComponent : MonoBehaviour
     {
-        [SerializeField] float m_speed = 6.0f;
+        [SerializeField]
+        private float m_speed = 6.0f;
         private Dictionary<State, BaseState> m_states = new Dictionary<State, BaseState>();
         private BaseState m_activeState;
         private Rigidbody2D m_rigidbody;
@@ -70,13 +71,13 @@ namespace AI
                     });
                 }
             }
-
         }
 
         private void Start()
         {
-            m_controller.SetTargetNode(m_grid.Find(transform.position, transform.position));
+            m_controller.MoveTo(m_grid.Find(transform.position, transform.position));
         }
+
         private void OnEnable()
         {
             m_activeState = m_states[State.Waiting];

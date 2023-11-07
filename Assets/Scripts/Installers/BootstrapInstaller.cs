@@ -12,7 +12,6 @@ namespace Installers
     {
         public override void InstallBindings()
         {
-
         }
     }
 }

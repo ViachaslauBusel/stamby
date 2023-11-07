@@ -24,7 +24,6 @@ namespace UI
             StartCoroutine(OpenDelay(delay));
         }
 
-
         private IEnumerator OpenDelay(float delay)
         {
             yield return new WaitForSeconds(delay);
